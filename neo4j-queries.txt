@@ -1,0 +1,244 @@
+create(virat:person{name:"virat"})
+
+----------
+SET clause
+----------
+
+match (virat:person{name:"virat"})
+set virat:player
+return virat
+
+match(virat:person{name:"virat"})
+set virat:batsman:captain
+return virat
+
+match (virat:person{name:"virat"})
+set virat.age=32
+return virat
+
+match(virat:player{name:"virat"})
+set virat.bat_avg=50, virat.high_score=100
+return virat
+
+match(virat:player{name:"virat"})
+set virat.bat_avg=75
+return virat
+
+match(virat:player{name:"virat"})
+set virat.bat_avg=null
+return virat
+
+match (virat:person{name:"virat"})
+return virat.name, virat.age
+
+match (virat:person{name:"virat"})
+return virat.name as name,  virat.age as age
+
+-------------
+CREATE node clause
+-------------
+create (dhoni:person:player:wicket_keeper{name:"dhoni", age:38, high_score:125})
+create (dhawan:person:player:batsman{name:"dhawan", age:40, high_score:75})
+create (rohit:person:player:batsman{name:"rohit", age:35, high_score:150})
+create (ashwin:person:player:bowler{name:"ashwin", age:40, high_wkt:5})
+create (ishan:person:player:bowler{name:"ishan", age:40, high_wkt:3})
+create (jadeja:person:player:all_rounder{name:"jadeja", age:40, high_wkt:3, high_score:50})
+match (n) return (n)
+
+create (ind:country:team{name:"india"})
+match (n) return (n)
+
+---------------------------
+CREATE relationship clause
+---------------------------
+create (rohit) - [r1:player_of] -> (ind)
+create (rohit:player{name:"rohit"}) - [r1:player_of] -> (ind:country{name:"India"})
+
+match (rohit:player), (ind:country)
+where rohit.name = "rohit" and ind.name = "india"
+create (rohit) - [r:player_of] -> (ind)
+
+match (virat), (ind)
+where virat.name ="virat" and ind.name = "india"
+create (virat) - [r:player_of{matches:"35"}] -> (ind)
+return (virat), (ind)
+
+match (virat), (ind)
+where virat.name ="virat" and ind.name = "india"
+create (virat) - [r:captain_of{matches:"5"}] -> (ind)
+return (virat), (ind)
+
+match (dhoni), (ind)
+where dhoni.name ="dhoni" and ind.name = "india"
+create (dhoni) - [r:player_of{matches:"55"}] -> (ind)
+return (dhoni), (ind)
+
+match (dhawan), (ind)
+where dhawan.name ="dhawan" and ind.name = "india"
+create (dhawan) - [r:player_of{matches:"25"}] -> (ind)
+return (dhawan), (ind)
+
+match (ashwin), (ind)
+where ashwin.name ="ashwin" and ind.name = "india"
+create (ashwin) - [r:player_of{matches:"55"}] -> (ind)
+return (ashwin), (ind)
+
+match (ishan), (ind)
+where ishan.name ="ishan" and ind.name = "india"
+create (ishan) - [r:player_of{matches:"25"}] -> (ind)
+return (ishan), (ind)
+
+match (jadeja), (ind)
+where jadeja.name ="jadeja" and ind.name = "india"
+create (jadeja) - [r:player_of{matches:"25"}] -> (ind)
+return (jadeja), (ind)
+
+
+create (icc18:tournament:icc{name:"icc18", year:2018})
+
+match (icc18), (ind)
+where icc18.name ="icc18" and ind.name = "india"
+create (ind) - [r:winner_of{matches:"5"}] -> (icc18)
+return (icc18), (ind)
+
+
+create (sri:country:team{name:"srilanka"})
+create (wi:country:team{name:"west_indies"})
+
+match (icc18), (sri)
+where icc18.name ="icc18" and sri.name = "srilanka"
+create (sri) - [r:participated_in{matches:"5"}] -> (icc18)
+return (icc18), (sri)
+
+match (icc18), (wi)
+where icc18.name ="icc18" and wi.name = "west_indies"
+create (wi) - [r:participated_in{matches:"5"}] -> (icc18)
+return (icc18), (wi)
+
+
+create (kalu:person:player:wicket_keeper{name:"kalu", age:28, high_score:25})
+create (tharanga:person:player:batsman{name:"tharanga", age:30, high_score:55})
+
+match (kalu), (sri)
+where kalu.name ="kalu" and sri.name = "srilanka"
+create (kalu) - [r:player_of{matches:"5"}] -> (sri)
+return (kalu), (sri)
+
+match (tharanga), (sri)
+where tharanga.name ="tharanga" and sri.name = "srilanka"
+create (tharanga) - [r:player_of{matches:"15"}] -> (sri)
+return (tharanga), (sri)
+
+
+create (wilson:person:player:wicket_keeper{name:"wilson", age:28, high_score:45})
+create (lara:person:player:batsman{name:"tharanga", age:30, high_score:55})
+
+match (wilson), (wi)
+where wilson.name ="wilson" and wi.name = "west_indies"
+create (wilson) - [r:player_of{matches:"5"}] -> (wi)
+return (wilson), (wi)
+
+match (lara), (wi)
+where lara.name ="lara" and wi.name = "west_indies"
+create (lara) - [r:player_of{matches:"55"}] -> (wi)
+return (lara), (wi)
+
+---------------------------
+WHERE clause
+---------------------------
+match (player)
+return (player)
+
+match (c:country)
+return c
+
+match (p:player)
+return p
+
+match (cap:captain)
+return cap
+
+match (bats:batsman)
+return bats
+
+match (player)
+where player.age <40
+return player
+
+match (player)
+where player.high_score > 100
+return player
+
+match (player)
+where player.age <45 and player.high_score > 100
+return player
+
+match (player), (country)
+where player.age > 30 and country.name = "india"
+return (player), (country)
+
+match (n) 
+where (n) - [:player_of] -> ({name:"india"})
+return (n)
+
+match (n)
+where (n) - [:winner_of] -> ({name:"icc18"})
+return (n)
+
+match (n)
+where (n) - [:participated_in] -> ()
+return (n)
+
+MATCH (n) 
+RETURN n 
+ORDER BY n.age, n.name
+
+MATCH (n)  
+RETURN n.name, n.high_score 
+ORDER BY n.high_score DESC
+
+
+---------------------------
+COUNT clause
+---------------------------
+
+Match(n)-[r]-(x)  
+RETURN type (r), count(*)
+
+Match(n{name:"india"})-[r]-(x)  
+RETURN type (r), count(*)
+
+Match(n{name:"west_indies"})-[r]-(x)  
+RETURN type (r), count(*)
+
+Match(n{name:"virat"})-[r]-(x)  
+RETURN type (r), count(*)
+
+Match(n{name:"dhoni"})-[r]-(x)  
+RETURN type (r), count(*)
+
+Match(n)-[r]-(x{name:"india"})  
+RETURN type (r), count(*)
+
+MATCH (n:player) 
+RETURN AVG(n.high_score)
+
+MATCH (n:player) 
+RETURN MIN(n.high_score)
+
+---------------------------
+DELETE / REMOVE clause
+---------------------------
+
+match (lara:person{name:"lara"})
+detach delete(lara)
+
+match (dhoni) where dhoni.name = "dhoni"
+remove dhoni.age
+return (dhoni)
+
+match (dhoni) where dhoni.name = "dhoni"
+remove dhoni:person
+return (dhoni)
+
+MATCH (n) DETACH DELETE n
